@@ -27,13 +27,8 @@ function getGame(play = "", ratings = '1600,1800,2000,2200,2500', speeds = 'blit
             results = data;
             document.getElementById('results').value = JSON.stringify(data);
             document.getElementById('opening').innerText = results.opening.name;
-            chess.reset()
-            for (let move of document.getElementById("moves").value.split(",")) {
-                chess.move(move, { sloppy: true });
-                console.log(move);
-
-            }
-            board1.position(chess.fen());
+            displayPosition();
+            displayLinks(data);
         })
         .catch((error) => {
             document.getElementById('results').value = 'Error ' + error.toString() + '\n\n Check if your input was correct.';
@@ -42,4 +37,26 @@ function getGame(play = "", ratings = '1600,1800,2000,2200,2500', speeds = 'blit
             document.getElementById('opening').innerText = '(None)';
 
         });
+};
+
+function displayPosition() {
+    chess.reset()
+    for (let move of document.getElementById("moves").value.split(",")) {
+        chess.move(move, { sloppy: true });
+        console.log(move);
+
+    }
+    board1.position(chess.fen());
+}
+
+function displayLinks(jsonData) {
+    let games = jsonData.recentGames;
+    document.getElementById('games').innerHTML = '';
+    for (let game of games) {
+        document.getElementById('games').innerHTML += `<p><a href='${makeLichessLink(game.id)}'>${makeLichessLink(game.id)}</a></p>`;
     };
+}
+
+function makeLichessLink(id) {
+    return 'https://lichess.org/' + id;
+}
